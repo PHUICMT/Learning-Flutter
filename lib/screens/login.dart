@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:learning_project/const/color.dart';
+import 'package:learning_project/models/user_model.dart';
+import 'package:learning_project/models/user_model2.dart';
 import 'package:learning_project/screens/home.dart';
 import 'package:learning_project/services/user_service.dart';
 import 'package:learning_project/widgets/logo.dart';
@@ -139,13 +141,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
   ElevatedButton loginButton() {
     return ElevatedButton(
-      onPressed: () {
-        UserService().getUser().then((user) {
-          Get.to(HomeScreen(fname: user.fname, lname: user.lname!));
-        }).catchError((error) {
-          print("getUser: $error");
-          //handle exception here!
-        });
+      onPressed: () async {
+        try {
+          UserModel user = await UserService().getUser();
+          UserModel2 user2 = await UserService().getUser2();
+          Get.to(HomeScreen(
+            fname: user.fname,
+            lname: user.lname!,
+            email: user2.email,
+          ));
+        } on Exception catch (e) {}
       },
       child: Text(
         "เข้าใช้งาน",
