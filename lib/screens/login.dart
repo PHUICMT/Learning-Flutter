@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:learning_project/const/color.dart';
 import 'package:learning_project/screens/home.dart';
+import 'package:learning_project/services/user_service.dart';
+import 'package:learning_project/widgets/logo.dart';
 
 enum Language {
   th,
@@ -38,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Container(
                     margin: EdgeInsets.only(top: Get.height * 0.1),
                     //column logo
-                    child: logo(),
+                    child: Logo(),
                   ),
                   Container(
                     width: Get.width * 0.8,
@@ -138,7 +140,12 @@ class _LoginScreenState extends State<LoginScreen> {
   ElevatedButton loginButton() {
     return ElevatedButton(
       onPressed: () {
-        Get.to(HomeScreen());
+        UserService().getUser().then((user) {
+          Get.to(HomeScreen(fname: user.fname, lname: user.lname!));
+        }).catchError((error) {
+          print("getUser: $error");
+          //handle exception here!
+        });
       },
       child: Text(
         "เข้าใช้งาน",
@@ -159,30 +166,6 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ),
-    );
-  }
-
-  Column logo() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Text(
-          "Kept",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 64,
-            fontWeight: FontWeight.bold,
-            height: 1,
-          ),
-        ),
-        Text(
-          "by krungsri",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-          ),
-        ),
-      ],
     );
   }
 }
